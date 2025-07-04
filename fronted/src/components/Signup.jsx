@@ -1,16 +1,18 @@
 import React from 'react'
 import { useState } from 'react'
 import axios from 'axios'
-
+import { useNavigate } from 'react-router-dom'
 
 const Signup = () => {
+
+  const navigate = useNavigate()
 
   const [form, setform] = useState({
     username: '',
     email: '',
     password: ''
   })
-  const [msg, setmsg] = useState('hy')
+  const [msg, setmsg] = useState('')
 
   const handleChange = (e) => {
     setform({
@@ -24,6 +26,7 @@ const Signup = () => {
     try {
       const response = await axios.post('http://localhost:8000/tasks/register/', form)
       setmsg(response.data.message)
+      navigate('/dashboard')
     } catch (error) {
       setmsg(error.response.data.message)
     }

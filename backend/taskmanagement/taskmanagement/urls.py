@@ -25,7 +25,7 @@ from tasks.views import RegisterView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('tasks/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('tasks/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('tasks/token/', TokenObtainPairView.as_view(), name='token'),
+    path('tasks/token/refresh/', TokenRefreshView.as_view(), name='refresh'),
     path('tasks/register/', RegisterView.as_view(), name='register'),
 ]
