@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .models import Board,Card
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
@@ -26,3 +27,12 @@ class LoginSerializer(TokenObtainPairSerializer):
         data['email'] = self.user.email
         return data
 
+class BoardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Board
+        fields = '__all__'
+
+class CardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Card
+        fields = '__all__'

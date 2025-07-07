@@ -5,7 +5,9 @@ from rest_framework.permissions import AllowAny
 from .serializers import RegisterSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import LoginSerializer
-
+from rest_framework import viewsets,permissions
+from .models import Board,Card
+from .serializers import BoardSerializer,CardSerializer
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
@@ -20,3 +22,21 @@ class RegisterView(APIView):
 class LoginView(TokenObtainPairView):
     serializer_class = LoginSerializer
     permission_classes = [AllowAny]
+
+
+class BoardViewSet(viewsets.ModelViewSet):
+    serializer_class = BoardSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Board.objects.none()  
+
+    def get_queryset(self):
+        return Board.objects.filter(owner=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class CardViewSet(viewsets.ModelViewSet):
+    queryset = Card.objects.all()
+    serializer_class = CardSerializer
+    permission_classes = [permissions.IsAuthenticated]
