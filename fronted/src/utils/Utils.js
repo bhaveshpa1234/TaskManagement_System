@@ -1,12 +1,18 @@
-const makeid = length => {
-    let text = "";
-    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+import React from "react";
+
+const Utils = {
+  
+  makeid: function (length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
 
     for (let i = 0; i < length; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
 
-    return text;
-}
+    return result;
+  }
+};
 
-export default { makeid };
+export default Utils;

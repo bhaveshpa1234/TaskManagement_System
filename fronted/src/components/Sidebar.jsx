@@ -74,7 +74,7 @@ const Sidebar = () => {
                 <ul>
                     {allboard.boards && allboard.boards.map((x,i)=>{
                         return <li key={i}>
-                            <button onClick={()=>setActiveboard(i)} className='px-3 py-2 w-full text-sm flex justify-start align-baseline hover:bg-gray-500'>
+                            <button onClick={()=>setActiveboard(i)} className='px-3 py-2 w-full text-sm flex justify-start text-white align-baseline hover:bg-gray-500'>
                                 <span className='w-6 h-max rounded-sm mr-2' style={{backgroundColor:`${x.bgcolor}`}}>&nbsp;</span>
                                 <span>{x.name}</span>
                             </button>
