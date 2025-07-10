@@ -40,3 +40,13 @@ class CardViewSet(viewsets.ModelViewSet):
     queryset = Card.objects.all()
     serializer_class = CardSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        board_id = self.request.query_params.get('board')
+        if board_id:
+            return Card.objects.filter(board_id=board_id, board__owner=self.request.user)
+        return Card.objects.filter(board__owner=self.request.user)
+            
+        
+    
+    

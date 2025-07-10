@@ -1,51 +1,74 @@
 import React from 'react'
-import { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import { Button,  Form, Input, message } from 'antd';
+
 
 const Signup = () => {
+  const navigate = useNavigate();
 
-  const navigate = useNavigate()
-
-  const [form, setform] = useState({
-    username: '',
-    email: '',
-    password: ''
-  })
-  const [msg, setmsg] = useState('')
-
-  const handleChange = (e) => {
-    setform({
-      ...form,
-      [e.target.name]: e.target.value
-    })
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const onFinish = async (values) => {
     try {
-      const response = await axios.post('http://localhost:8000/tasks/register/', form)
-      setmsg(response.data.message)
-      navigate('/dashboard')
+      const response = await axios.post('http://localhost:8000/tasks/register/', values);
+      message.success(response.data.message || 'Registered successfully!');
+      navigate('/dashboard');
     } catch (error) {
-      setmsg(error.response.data.message)
+      message.error(error.response?.data?.message || 'Something  wrong');
     }
-  }
+  };
 
-
+  const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+  };
 
   return (
-    <div>
-      <h1 className='text-3xl font-bold felx text-center'>Signup</h1>
-      <form className='flex flex-col items-center space-y-4 mt-7' onSubmit={handleSubmit}>
-        <input onChange={handleChange} className='w-80 border border-gray-400' name='username' type="text" placeholder='Name' />
-        <input onChange={handleChange} className='w-80 border border-gray-400' name='email' type="email" placeholder='Email' />
-        <input onChange={handleChange} className='w-80 border border-gray-400' name='password' type="password" placeholder='Password' />
-        <button type='submit' className='w-80 border border-green-400'>Signup</button>
-      </form>
-      {msg && <p>{msg}</p>}
-    </div>
-  )
-}
+    <>
+      <h1 className='text-3xl font-bold text-center mb-6'>Signup</h1>
+      <Form
+        name="signup"
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+        style={{ maxWidth: 600, margin: '0 auto' }}
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
+      >
+        <Form.Item
+          label="Username"
+          name="username"
+          rules={[{ required: true, message: 'Please input your username!' }]}
+        >
+          <Input />
+        </Form.Item>
 
-export default Signup
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[
+            { required: true, message: 'Please input your email!' },
+            { type: 'email', message: 'Please enter a valid email!' }
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[{ required: true, message: 'Please input your password!' }]}
+        >
+          <Input.Password />
+        </Form.Item>
+
+        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <Button type="primary" htmlType="submit">
+            Signup
+          </Button>
+        </Form.Item>
+      </Form>
+    </>
+  );
+};
+
+export default Signup;
