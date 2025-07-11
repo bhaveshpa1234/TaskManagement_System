@@ -13,7 +13,6 @@ const Dashboard = () => {
   const [activeBoard, setActiveBoard] = useState(null);
   const [cards, setCards] = useState([]);
 
-  
   useEffect(() => {
     API.get('boards/')
       .then(res => {
@@ -23,7 +22,6 @@ const Dashboard = () => {
       .catch(err => console.error(err));
   }, []);
 
- 
   useEffect(() => {
     if (activeBoard) {
       API.get(`cards/?board_id=${activeBoard}`)
@@ -32,12 +30,10 @@ const Dashboard = () => {
     }
   }, [activeBoard]);
 
-  
   const getCardsByStatus = (status) => {
     return cards.filter(card => card.status === status);
   };
 
- 
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -56,6 +52,25 @@ const Dashboard = () => {
     }
   };
 
+  const handleBoardDelete = async (id) => {
+    try {
+      await API.delete(`boards/${id}/`);
+      const updatedBoards = boards.filter(b => b.id !== id);
+      setBoards(updatedBoards);
+
+      if (id === activeBoard) {
+        if (updatedBoards.length > 0) {
+          setActiveBoard(updatedBoards[0].id);
+        } else {
+          setActiveBoard(null);
+          setCards([]);
+        }
+      }
+    } catch (err) {
+      console.error('Delete board error:', err);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -67,7 +82,10 @@ const Dashboard = () => {
               setCards([]);
               setActiveBoard(board.id);
             }}
+            onBoardDelete={handleBoardDelete}
+            boards={boards}
           />
+
           <select
             onChange={e => setActiveBoard(e.target.value)}
             value={activeBoard || ""}
@@ -96,6 +114,7 @@ const Dashboard = () => {
                     onTaskAdd={(task) => setCards([...cards, task])}
                   />
                 </div>
+
                 {getCardsByStatus(status).map(card => (
                   <CardItem
                     key={card.id}

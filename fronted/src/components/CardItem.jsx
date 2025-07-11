@@ -22,7 +22,10 @@ const CardItem = ({ card, onDelete }) => {
       <Trash2
         size={16}
         className="text-red-500 cursor-pointer absolute top-2 right-2"
-        onClick={() => onDelete(card.id)}
+        onClick={(e) => {
+        e.stopPropagation();
+        onDelete(card.id);
+        }}
       />
       <h4 className="font-semibold">{card.title}</h4>
       <p className="text-xs text-gray-600">{card.description}</p>
