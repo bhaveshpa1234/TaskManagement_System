@@ -1,69 +1,64 @@
 import React from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button } from 'antd';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
-  const navigate = useNavigate();
-
-  const onFinish = async (values) => {
-    try {
-      const response = await axios.post('http://localhost:8000/tasks/token/', {
-        username: values.username,
-        password: values.password
-      });
-
-      localStorage.setItem('access', response.data.access);
-      localStorage.setItem('refresh', response.data.refresh);
-
-      message.success('Login successful!');
-      navigate('/dashboard');
-    } catch (error) {
-      message.error(error.response?.data?.msg || 'Login failed');
-    }
+  const onFinish = (values) => {
+    console.log('Login Success:', values);
+  
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log('Login failed:', errorInfo);
+    console.log('Login Failed:', errorInfo);
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-center mb-6">Login</h1>
-      <Form
-        name="login"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600, margin: '0 auto' }}
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-        <Form.Item
-          label="Username"
-          name="username"
-          rules={[{ required: true, message: 'Please input your username!' }]}
+    <div className="flex justify-center items-center h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-semibold mb-6">Login</h2>
+
+        <Form
+          name="loginForm"
+          layout="vertical"
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
         >
-          <Input />
-        </Form.Item>
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              { required: true, message: 'Please enter your email' },
+              { type: 'email', message: 'Enter a valid email' },
+            ]}
+          >
+            <Input placeholder="Email" />
+          </Form.Item>
 
-     
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: 'Please enter your password' }]}
+          >
+            <Input.Password placeholder="Password" />
+          </Form.Item>
 
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: 'Please input your password!' }]}
-        >
-          <Input.Password />
-        </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" className="w-full">
+              Login
+            </Button>
+          </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            Login
-          </Button>
-        </Form.Item>
-      </Form>
+          <div className="flex justify-between text-sm">
+            <Link to="/ForgotPassword" className="text-blue-500 hover:underline">
+              Forgot Password?
+            </Link>
+            <Link to="/signup" className="text-blue-500 hover:underline">
+              New User?
+            </Link>
+          </div>
+        </Form>
+      </div>
     </div>
   );
 };
