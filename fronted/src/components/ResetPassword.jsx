@@ -1,17 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Input, Button, message } from 'antd';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const ResetPassword = () => {
-  const location = useLocation();
+  const { uid, token } = useParams();
   const navigate = useNavigate();
-  const email = location.state?.email || '';
+  const [loading, setLoading] = useState(false);
 
-  const onFinish = (values) => {
-    console.log('New password for:', email, 'is', values.password);
+  const onFinish = async (values) => {
+    try {
+      setLoading(true);
 
-    message.success('Password reset successfully');
-    navigate('/login');
+      const response = await axios.post(
+        `http://127.0.0.1:8000/account/reset-password/${uid}/${token}/`,
+        {
+          password: values.password,
+          password2: values.confirm,
+        }
+      );
+
+      toast.success('Password reset successfully');
+      navigate('/login');
+    } catch (error) {
+      const err = error.response?.data;
+      const errorMsg =
+        err?.msg || err?.detail || Object.values(err || {})[0] || 'Something went wrong';
+      toast.error(errorMsg);
+      console.error('Reset error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const validatePasswords = ({ getFieldValue }) => ({
@@ -26,7 +46,7 @@ const ResetPassword = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-xl font-semibold mb-6 text-center">Reset Password</h2>
+        <h2 className="text-xl font-semibold mb-6 text-center">Reset Your Password</h2>
         <Form layout="vertical" onFinish={onFinish}>
           <Form.Item
             label="New Password"
@@ -49,7 +69,7 @@ const ResetPassword = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="w-full">
+            <Button type="primary" htmlType="submit" className="w-full" loading={loading}>
               Reset Password
             </Button>
           </Form.Item>

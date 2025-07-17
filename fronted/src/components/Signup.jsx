@@ -1,23 +1,60 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Form, Input, Button } from 'antd';
 import PhoneInput from 'react-phone-input-2';
-import { Link } from 'react-router-dom';
 import 'react-phone-input-2/lib/style.css';
+import { Link, useNavigate } from 'react-router-dom';
+import API from '../utils/api';
+import { toast } from 'react-toastify';
 
 const Signup = () => {
   const [form] = Form.useForm();
   const [phone, setPhone] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
+    if (!phone || phone.length < 10) {
+      toast.error('Please enter a valid phone number');
+      return;
+    }
+
     const data = {
-      fullName: values.fullName,
+      name: values.name,
       email: values.email,
-      password: values.password,
       phone: phone,
+      password: values.password,
+      password2: values.password2,
     };
-    console.log('Signup Data:', data);
-    
+
+    try {
+      setLoading(true);
+      const res = await API.post('register/', data);
+      const tokens = res.data.token;
+
+      localStorage.setItem('access', tokens.access);
+      localStorage.setItem('refresh', tokens.refresh);
+
+      toast.success('Account created! Redirecting to dashboard...');
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Signup error:', error.response?.data);
+
+      let errorMsg = 'Registration failed!';
+      const errData = error.response?.data;
+
+      if (errData) {
+        if (errData.detail) errorMsg = errData.detail;
+        else {
+          const firstError = Object.values(errData)[0];
+          if (Array.isArray(firstError)) errorMsg = firstError[0];
+          else if (typeof firstError === 'string') errorMsg = firstError;
+        }
+      }
+
+      toast.error(errorMsg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const validatePasswords = ({ getFieldValue }) => ({
@@ -30,9 +67,9 @@ const Signup = () => {
   });
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-lg">
-        <h2 className="text-2xl font-semibold mb-6">Signup</h2>
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-white px-4">
+      <div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-lg">
+        <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">Create Account</h2>
 
         <Form
           form={form}
@@ -41,15 +78,13 @@ const Signup = () => {
           onFinish={onFinish}
           autoComplete="off"
         >
-
           <Form.Item
-            label="Full Name"
-            name="fullName"
-            rules={[{ required: true, message: 'Please enter your full name' }]}
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: 'Please enter your name' }]}
           >
             <Input placeholder="Full Name" />
           </Form.Item>
-
 
           <Form.Item label="Mobile Number" required>
             <PhoneInput
@@ -68,7 +103,6 @@ const Signup = () => {
             />
           </Form.Item>
 
-
           <Form.Item
             label="Email"
             name="email"
@@ -80,7 +114,6 @@ const Signup = () => {
             <Input placeholder="Email" />
           </Form.Item>
 
-
           <Form.Item
             label="Password"
             name="password"
@@ -91,7 +124,7 @@ const Signup = () => {
 
           <Form.Item
             label="Confirm Password"
-            name="confirm"
+            name="password2"
             dependencies={['password']}
             rules={[
               { required: true, message: 'Please confirm your password' },
@@ -101,9 +134,13 @@ const Signup = () => {
             <Input.Password placeholder="Confirm Password" />
           </Form.Item>
 
-     
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="w-full">
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700"
+              loading={loading}
+            >
               Signup
             </Button>
           </Form.Item>

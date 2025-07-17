@@ -1,5 +1,5 @@
 """
-URL configuration for taskmanagement project.
+URL configuration for taskmanager project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.2/topics/http/urls/
@@ -16,17 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,    
-)
-from tasks.views import RegisterView
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('tasks/', include('tasks.urls')),
-    path('tasks/token/', TokenObtainPairView.as_view(), name='token'),
-    path('tasks/token/refresh/', TokenRefreshView.as_view(), name='refresh'),
-    path('tasks/register/', RegisterView.as_view(), name='register'),
+    path('task/', include('task.urls')),
+    path('board/', include('board.urls')),
+    path('account/', include('account.urls')),
 ]
