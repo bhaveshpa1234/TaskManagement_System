@@ -23,10 +23,10 @@ function App() {
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
         <Route path='/ForgotPassword' element={<ForgotPassword />} />
-        <Route path='/dashboard' element={<Dashboard />} />
+        {/* <Route path='/dashboard' element={<Dashboard />} /> */}
         <Route path="/forgotflow" element={<ForgotFlow />} />
         <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
-        {/* <Route path='/dashboard' element={<PrivateRoute><Dashboard /></PrivateRoute>} /> */}
+        <Route path='/dashboard' element={<PrivateRoute><Dashboard /></PrivateRoute>} />
         
 
       </Routes>

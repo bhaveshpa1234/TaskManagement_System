@@ -14,7 +14,7 @@ const Login = () => {
     };
 
     try {
-      const res = await API.post('login/', loginData);
+      const res = await API.post('account/login/', loginData);
       const tokens = res.data.token;
 
       localStorage.setItem('access', tokens.access);

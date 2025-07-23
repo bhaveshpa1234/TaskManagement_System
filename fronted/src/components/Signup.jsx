@@ -3,7 +3,7 @@ import { Form, Input, Button } from 'antd';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { Link, useNavigate } from 'react-router-dom';
-import API from '../utils/api';
+import axios from 'axios'; // ✅ Using plain axios
 import { toast } from 'react-toastify';
 
 const Signup = () => {
@@ -28,7 +28,7 @@ const Signup = () => {
 
     try {
       setLoading(true);
-      const res = await API.post('register/', data);
+      const res = await axios.post('http://127.0.0.1:8000/account/register/', data); // ✅ Updated
       const tokens = res.data.token;
 
       localStorage.setItem('access', tokens.access);
@@ -38,6 +38,7 @@ const Signup = () => {
       navigate('/dashboard');
     } catch (error) {
       console.error('Signup error:', error.response?.data);
+      console.error('Signup error full:', error);
 
       let errorMsg = 'Registration failed!';
       const errData = error.response?.data;

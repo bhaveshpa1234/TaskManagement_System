@@ -3,13 +3,14 @@ import { Form, Input, Button, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import API from '../utils/api'; 
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
 
   const onFinish = async ({ email }) => {
     try {
-      await API.post('send-reset-password-email/', { email });
+      await axios.post('http://localhost:8000/account/send-reset-password-email/', { email });
       toast.success('sent to your email');
       navigate('/forgotflow', { state: { email } });
     } catch (error) {
@@ -17,6 +18,7 @@ const ForgotPassword = () => {
       const errorMsg = err?.msg || err?.error || Object.values(err || {})[0] || 'Failed to send ';
       toast.error(errorMsg);
       console.error('Send  error:', err);
+      console.log(error.response)
     }
   };
 
