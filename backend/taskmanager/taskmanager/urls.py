@@ -22,4 +22,5 @@ urlpatterns = [
     path('task/', include('task.urls')),
     path('board/', include('board.urls')),
     path('account/', include('account.urls')),
+    path('groups/', include('groups.urls')),
 ]

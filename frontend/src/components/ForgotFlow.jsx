@@ -11,7 +11,7 @@ const ForgotFlow = () => {
     if (location.state?.email) {
       setEmail(location.state.email);
     } else {
-      navigate('/forgot'); // If email not found, redirect back
+      navigate('/forgot'); 
     }
   }, [location, navigate]);
 

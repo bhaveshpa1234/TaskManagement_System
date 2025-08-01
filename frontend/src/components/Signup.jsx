@@ -28,14 +28,14 @@ const Signup = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post('http://127.0.0.1:8000/account/register/', data); // ✅ Updated
+      const res = await axios.post('http://127.0.0.1:8000/account/register/', data); 
       const tokens = res.data.token;
 
       localStorage.setItem('access', tokens.access);
       localStorage.setItem('refresh', tokens.refresh);
 
       toast.success('Account created! Redirecting to dashboard...');
-      navigate('/dashboard');
+      navigate('/board');
     } catch (error) {
       console.error('Signup error:', error.response?.data);
       console.error('Signup error full:', error);

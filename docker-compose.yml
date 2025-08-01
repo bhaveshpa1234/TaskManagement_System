@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: taskmanager
+      MYSQL_USER: root
+      MYSQL_PASSWORD: tiger
+      MYSQL_ROOT_PASSWORD: tiger
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: django_backend
+    command: gunicorn taskmanager.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: react_frontend
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend:/app
+    stdin_open: true
+    tty: true
+
+volumes:
+  mysql_data:

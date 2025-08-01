@@ -21,7 +21,7 @@ const Login = () => {
       localStorage.setItem('refresh', tokens.refresh);
 
       toast.success('Login successful!');
-      navigate('/dashboard');
+      navigate('/board');
     } catch (error) {
       const errorMsg =
         error.response?.data?.msg ||
