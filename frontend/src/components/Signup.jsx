@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { Form, Input, Button } from 'antd';
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios'; // ✅ Using plain axios
-import { toast } from 'react-toastify';
+import React, { useState } from "react";
+import { Form, Input, Button } from "antd";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Signup = () => {
   const [form] = Form.useForm();
-  const [phone, setPhone] = useState('');
+  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
     if (!phone || phone.length < 10) {
-      toast.error('Please enter a valid phone number');
+      toast.error("Please enter a valid phone number");
       return;
     }
 
@@ -28,19 +28,22 @@ const Signup = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post('http://127.0.0.1:8000/account/register/', data); 
+      const res = await axios.post(
+        "http://127.0.0.1:8000/account/register/",
+        data
+      );
       const tokens = res.data.token;
 
-      localStorage.setItem('access', tokens.access);
-      localStorage.setItem('refresh', tokens.refresh);
+      localStorage.setItem("access", tokens.access);
+      localStorage.setItem("refresh", tokens.refresh);
 
-      toast.success('Account created! Redirecting to dashboard...');
-      navigate('/board');
+      toast.success("Account created! Redirecting to dashboard...");
+      navigate("/board");
     } catch (error) {
-      console.error('Signup error:', error.response?.data);
-      console.error('Signup error full:', error);
+      console.error("Signup error:", error.response?.data);
+      console.error("Signup error full:", error);
 
-      let errorMsg = 'Registration failed!';
+      let errorMsg = "Registration failed!";
       const errData = error.response?.data;
 
       if (errData) {
@@ -48,7 +51,7 @@ const Signup = () => {
         else {
           const firstError = Object.values(errData)[0];
           if (Array.isArray(firstError)) errorMsg = firstError[0];
-          else if (typeof firstError === 'string') errorMsg = firstError;
+          else if (typeof firstError === "string") errorMsg = firstError;
         }
       }
 
@@ -60,17 +63,30 @@ const Signup = () => {
 
   const validatePasswords = ({ getFieldValue }) => ({
     validator(_, value) {
-      if (!value || getFieldValue('password') === value) {
+      if (!value || getFieldValue("password") === value) {
         return Promise.resolve();
       }
-      return Promise.reject(new Error('Passwords do not match'));
+      return Promise.reject(new Error("Passwords do not match"));
     },
   });
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-white px-4">
-      <div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-lg">
-        <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">Create Account</h2>
+    <div
+      className="flex justify-center items-center min-h-screen 
+                    bg-gradient-to-br from-blue-100 via-blue-50 to-white px-4
+                    dark:from-gray-900 dark:via-gray-800 dark:to-gray-900
+                    transition-colors duration-300"
+    >
+      <div
+        className="bg-white dark:bg-gray-800 p-8 sm:p-10 rounded-2xl shadow-xl 
+                      w-full max-w-lg transition-colors duration-300"
+      >
+        <h2
+          className="text-2xl sm:text-3xl font-bold mb-6 text-center 
+                       text-blue-600 dark:text-blue-400"
+        >
+          Create Account
+        </h2>
 
         <Form
           form={form}
@@ -80,75 +96,96 @@ const Signup = () => {
           autoComplete="off"
         >
           <Form.Item
-            label="Name"
+            label={<span className="dark:text-gray-200">Name</span>}
             name="name"
-            rules={[{ required: true, message: 'Please enter your name' }]}
+            rules={[{ required: true, message: "Please enter your name" }]}
           >
-            <Input placeholder="Full Name" />
-          </Form.Item>
-
-          <Form.Item label="Mobile Number" required>
-            <PhoneInput
-              country={'in'}
-              value={phone}
-              onChange={setPhone}
-              enableSearch
-              inputStyle={{
-                width: '100%',
-                height: '38px',
-                borderRadius: '0.375rem',
-                border: '1px solid #d9d9d9',
-              }}
-              specialLabel=""
-              containerStyle={{ width: '100%' }}
+            <Input
+              placeholder="Full Name"
+              className="dark:bg-gray-700 dark:text-white"
             />
           </Form.Item>
 
           <Form.Item
-            label="Email"
+            label={<span className="dark:text-gray-200">Mobile Number</span>}
+            required
+          >
+            <PhoneInput
+              className="dark:text-gray-200"
+              country={"in"}
+              value={phone}
+              onChange={setPhone}
+              enableSearch
+              inputStyle={{
+                width: "100%",
+                height: "38px",
+                borderRadius: "0.375rem",
+                border: "1px solid #d9d9d9",
+                backgroundColor: "var(--tw-bg-opacity,transparent)",
+                color: "inherit",
+              }}
+              specialLabel=""
+              containerStyle={{ width: "100%" }}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label={<span className="dark:text-gray-200">Email</span>}
             name="email"
             rules={[
-              { required: true, message: 'Please enter your email' },
-              { type: 'email', message: 'Please enter a valid email' },
+              { required: true, message: "Please enter your email" },
+              { type: "email", message: "Please enter a valid email" },
             ]}
           >
-            <Input placeholder="Email" />
+            <Input
+              placeholder="Email"
+              className="dark:bg-gray-700 dark:text-white"
+            />
           </Form.Item>
 
           <Form.Item
-            label="Password"
+            label={<span className="dark:text-gray-200">Password</span>}
             name="password"
-            rules={[{ required: true, message: 'Please enter your password' }]}
+            rules={[{ required: true, message: "Please enter your password" }]}
           >
-            <Input.Password placeholder="Password" />
+            <Input.Password
+              placeholder="Password"
+              className="dark:bg-gray-700 dark:text-white"
+            />
           </Form.Item>
 
           <Form.Item
-            label="Confirm Password"
+            label={<span className="dark:text-gray-200">Confirm Password</span>}
             name="password2"
-            dependencies={['password']}
+            dependencies={["password"]}
             rules={[
-              { required: true, message: 'Please confirm your password' },
+              { required: true, message: "Please confirm your password" },
               validatePasswords,
             ]}
           >
-            <Input.Password placeholder="Confirm Password" />
+            <Input.Password
+              placeholder="Confirm Password"
+              className="dark:bg-gray-700 dark:text-white"
+            />
           </Form.Item>
 
           <Form.Item>
             <Button
               type="primary"
               htmlType="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700"
+              className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
               loading={loading}
             >
               Signup
             </Button>
           </Form.Item>
 
-          <p className="text-sm text-center mt-4">
-            Already registered?{' '}
-            <Link to="/login" className="text-blue-500 hover:underline">
+          <p className="text-sm text-center mt-4 text-gray-700 dark:text-gray-300">
+            Already registered?{" "}
+            <Link
+              to="/login"
+              className="text-blue-500 hover:underline dark:text-blue-400"
+            >
               Login
             </Link>
           </p>

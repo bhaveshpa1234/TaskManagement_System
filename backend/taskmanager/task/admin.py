@@ -2,7 +2,6 @@ from django.contrib import admin
 from .models import Task
 
 @admin.register(Task)
-class TaskAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'status', 'board', 'priority', 'group', 'due_date')
-    list_filter = ('status', 'board')
-    search_fields = ('name',)
+class BoardAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'description','status','board','priority','group','due_date')
+    search_fields = ('id', 'name')

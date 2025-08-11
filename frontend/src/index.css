@@ -1,5 +1,5 @@
 @import "tailwindcss";
-/* @custom-variant dark (&:where(.dark, .dark *)); */
+@custom-variant dark (&:where(.dark, .dark *));
 
 @import 'antd/dist/reset.css';
 
@@ -9,4 +9,8 @@ html, body, #root {
   margin: 0 !important;
   padding: 0 !important;
   height: 100%;
+}
+
+html {
+  transition: background-color 0.3s, color 0.3s;
 }

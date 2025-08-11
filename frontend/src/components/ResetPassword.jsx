@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -13,7 +13,7 @@ const ResetPassword = () => {
     try {
       setLoading(true);
 
-      const response = await axios.post(
+      await axios.post(
         `http://127.0.0.1:8000/account/reset-password/${uid}/${token}/`,
         {
           password: values.password,
@@ -44,20 +44,31 @@ const ResetPassword = () => {
   });
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-xl font-semibold mb-6 text-center">Reset Your Password</h2>
+    <div className="flex justify-center items-center min-h-screen 
+                    bg-gray-100 dark:bg-gray-900 
+                    px-4 sm:px-6 lg:px-8">
+      <div className="bg-white dark:bg-gray-800 
+                      p-8 sm:p-10 rounded-2xl shadow-xl 
+                      w-full max-w-md">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center 
+                       text-gray-800 dark:text-white">
+          Reset Your Password
+        </h2>
+
         <Form layout="vertical" onFinish={onFinish}>
           <Form.Item
-            label="New Password"
+            label={<span className="dark:text-gray-200">New Password</span>}
             name="password"
             rules={[{ required: true, message: 'Please enter your new password' }]}
           >
-            <Input.Password placeholder="New Password" />
+            <Input.Password
+              placeholder="New Password"
+              className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            />
           </Form.Item>
 
           <Form.Item
-            label="Confirm Password"
+            label={<span className="dark:text-gray-200">Confirm Password</span>}
             name="confirm"
             dependencies={['password']}
             rules={[
@@ -65,11 +76,19 @@ const ResetPassword = () => {
               validatePasswords,
             ]}
           >
-            <Input.Password placeholder="Confirm Password" />
+            <Input.Password
+              placeholder="Confirm Password"
+              className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            />
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="w-full" loading={loading}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+              loading={loading}
+            >
               Reset Password
             </Button>
           </Form.Item>
