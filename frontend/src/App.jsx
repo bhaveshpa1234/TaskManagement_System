@@ -3,7 +3,7 @@ import Signup from "./components/Signup";
 import Login from "./components/Login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
-import PrivateRoute from "./components/PrivateRoute";
+import PrivateRoute from "./components/PrivateRoute"; //use for protected routes
 import ForgotPassword from "./components/ForgotPassword";
 import ForgotFlow from "./components/ForgotFlow";
 import ResetPassword from "./components/ResetPassword";

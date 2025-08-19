@@ -115,21 +115,29 @@ const Group = () => {
   };
 
   const handleDragEnd = async (event) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
+  const { active, over } = event;
+  if (!over || active.id === over.id) return;
 
-    const taskId = active.id;
-    const newGroupId = over.data.current?.groupId;
+  const taskId = active.id;
+  const newGroupId = over.data.current?.groupId;
 
-    try {
-      await API.patch(`/task/${taskId}/`, { group: newGroupId });
-      fetchGroups();
-      message.success('Task moved');
-    } catch (err) {
-      console.error('Error updating task group', err);
-      message.error('Move failed');
-    }
-  };
+  
+  const newGroup = groups.find(g => g.id === newGroupId);
+  if (!newGroup) return;
+
+  try {
+    await API.patch(`/task/${taskId}/`, { 
+      group: newGroupId,
+      status: newGroup.name  
+    });
+    fetchGroups();
+    message.success(`Task moved to ${newGroup.name}`);
+  } catch (err) {
+    console.error('Error updating task group', err);
+    message.error('Move failed');
+  }
+};
+
 
   
 const DraggableTask = ({ task, groupId, handleEditTask, handleDeleteTask }) => {
@@ -141,77 +149,74 @@ const DraggableTask = ({ task, groupId, handleEditTask, handleDeleteTask }) => {
     },
   });
 
-  return (
-    <div
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners} 
-      className=" bg-blue-300 dark:border-gray-990 text-black p-3 rounded-xl shadow hover:shadow-lg transition-shadow relative cursor-grab active:cursor-grabbing z-10 dark:bg-gray-700 dark:text-white"
-    >
-      <div className="flex justify-between items-start">
-        <div className="w-full">
-          <div className="flex justify-between items-center">
-            <div className="font-semibold max-w-[100px] truncate">{task.name}</div>
-          </div>
+ return (
+  <div
+    ref={setNodeRef}
+    className="bg-blue-300 dark:border-gray-990 text-black p-3 rounded-xl shadow hover:shadow-lg transition-shadow relative z-10 dark:bg-gray-700 dark:text-white"
+  >
+    <div className="flex justify-between items-start">
+      
+      {/* Draggable content area (name, details, date, status) */}
+      <div
+        {...attributes}
+        {...listeners}
+        className="w-full cursor-grab active:cursor-grabbing"
+      >
+        <div className="flex justify-between items-center">
+          <div className="font-semibold max-w-[100px] truncate">
+            {task.name}
+          </div>
+        </div>
 
-          <div className="text-sm text-gray-700 mt-1 max-w-[150px] break-words whitespace-normal dark:text-gray-300">
-            Details: {task.description}
-          </div>
-          <div className="text-xs text-gray-600 mt-1 dark:text-gray-400">
-            Due Date: {task.due_date ? new Date(task.due_date).toLocaleString() : 'No deadline'}
-          </div>
-          <div className="text-xs text-gray-600 mt-2 flex items-center gap-1 whitespace-nowrap dark:text-gray-400">
-            Priority:
-            <span className="text-yellow-500 ml-1">
-              {'★'.repeat(task.priority)}{'☆'.repeat(3 - task.priority)}
-            </span>
-            | Status:<span className="capitalize"> {task.status}</span>
-          </div>
-        </div>
+        <div className="text-sm text-gray-700 mt-1 max-w-[150px] break-words whitespace-normal dark:text-gray-300">
+          Details: {task.description}
+        </div>
+        <div className="text-xs text-gray-600 mt-1 dark:text-gray-400">
+          Due Date: {task.due_date ? new Date(task.due_date).toLocaleString() : 'No deadline'}
+        </div>
+        <div className="text-xs text-gray-600 mt-2 flex items-center gap-1 whitespace-nowrap dark:text-gray-400">
+          Priority:
+          <span className="text-yellow-500 ml-1">
+            {'★'.repeat(task.priority)}{'☆'.repeat(3 - task.priority)}
+          </span>
+          | Status:<span className="capitalize"> {task.status}</span>
+        </div>
+      </div>
 
-           <div
-  onMouseDown={(e) => e.stopPropagation()}
-  onTouchStart={(e) => e.stopPropagation()} 
-  onClick={(e) => e.stopPropagation()} className='relative z-[999]' 
->
-           
-          <Dropdown
-            menu={{
-              items: [
-                {
-                  key: 'edit',
-                  label: 'Edit',
-                },
-                {
-                  key: 'delete',
-                  danger: true,
-                  label: 'Delete',
-                },
-              ],
-              onClick: ({ key }) => {
-                if (key === 'edit') {
-                  handleEditTask(task, groupId);
-                } else if (key === 'delete') {
-                  handleDeleteTask(task.id);
-                }
-              },
-            }}
-            trigger={['click']}
-            placement="bottomRight"
-            arrow
-          >
-            <span className="inline-block cursor-pointer">
-              <MoreVertical />
-            </span>
-          </Dropdown>
-        </div>
-      </div>
+      {/* Dropdown menu (click works without dragging) */}
+      <div
+        onMouseDown={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
+        className="relative z-[999]"
+      >
+        <Dropdown
+          menu={{
+            items: [
+              { key: 'edit', label: 'Edit' },
+              { key: 'delete', danger: true, label: 'Delete' },
+            ],
+            onClick: ({ key }) => {
+              if (key === 'edit') {
+                handleEditTask(task, groupId);
+              } else if (key === 'delete') {
+                handleDeleteTask(task.id);
+              }
+            },
+          }}
+          trigger={['click']}
+          placement="bottomRight"
+          arrow
+        >
+          <span className="inline-block cursor-pointer">
+            <MoreVertical />
+          </span>
+        </Dropdown>
+      </div>
+    </div>
+  </div>
+);
 
-
-      
-    </div>
-    
-  );
 };
 
 
