@@ -1,5 +1,19 @@
+# Django core
 Django>=4.2
+
+# REST framework
 djangorestframework
-django-cors-headers
-python-dotenv
+
+# JWT Authentication
 djangorestframework-simplejwt
+
+# CORS headers
+django-cors-headers
+
+# Environment variables
+python-dotenv
+
+# MySQL database connector
+mysqlclient
+
+
