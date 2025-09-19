@@ -5,6 +5,7 @@ import "react-phone-input-2/lib/style.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import API from "../utils/api";
 
 const Signup = () => {
   const [form] = Form.useForm();
@@ -28,10 +29,8 @@ const Signup = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post(
-        "http://127.0.0.1:8000/account/register/",
-        data
-      );
+      const res = await API.post("/account/register/", data);
+
       const tokens = res.data.token;
 
       localStorage.setItem("access", tokens.access);

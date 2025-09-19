@@ -3,13 +3,14 @@ import { Form, Input, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import API from '../utils/api';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
 
   const onFinish = async ({ email }) => {
     try {
-      await axios.post('http://localhost:8000/account/send-reset-password-email/', { email });
+      await API.post('/account/send-reset-password-email/', { email });
       toast.success('Password reset link sent to your email');
       navigate('/forgotflow', { state: { email } });
     } catch (error) {
